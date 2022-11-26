@@ -1,0 +1,50 @@
+#resolver qqlr tipo de equação que possua apenas uma das variáveis como desconhecida
+
+def inverter(a):  #essa funcao vai ser utilizad dentro de eqrotation para inverter os operadores, acao necessaria quando um operador é passado de um lado da equacao para outro
+
+    op = ["+", "-", "*", "/", "**", "#"] #definindo lista com operadores (# = raiz quadrada), para poder relacionar eles
+
+    if op.index(a) % 2 != 0:  #testando se o operador é subtracao, divisao ou raiz; isso por meio do index do operador em op, impar = cai no if; par = nao cai no if
+
+        return op[op.index(a) - 1] #caso sim, o inversor desses está localizado uma posicao anterior em op
+
+    return op[op.index(a) + 1] #caso nao, o inversor desses está localizado uma posicao posterior em op
+
+def eqrotation(a):
+
+    let = ""  #guardar a variavel que se deseja descobrir
+
+    if a[0] != "-": #os 2 ifs a seguir sao para formatar a eq de forma a explicitar os possiveis valores positivos no primeiro termo de cada lado da eq
+
+        a = "+" + a
+
+    if a[a.index("=") + 1] != "-":
+
+        a = a[:a.index("=")+1] + "+" + a[a.index("=")+1:]
+
+
+    for j in range(len(a)):  #formatarei a eq para que o lado possuindo a variavel desconhecida fique do lado esquerdo (permitindo utilizar eval ao fim da funcao); para isso, checo se essa variel esta antes ou depois de "=" na eq
+
+        if a[j].isalpha() and (a.index("=") < j): #se a variavel desconhecida estiver antes de "=", nao modifico; se estiver a direita, jogo o lado direito como esquerdo e esquerdo como direito; sem precisar manipular operacoes ou sinais ainda, pq A+B=C é o mesmo que C=A+B
+
+            let = a[j]
+
+            rep = a[j-1:j+1]   #o rep, replace e jogar o rep no inicio da redefinicao de a serve para garantir que a variavel desconhecida esteja no index 1 da eq
+
+            a = a.replace(a[j-1:j+1], "")
+
+            a = rep + a[a.index("=")+1:] + "=" + str(eval(a[:a.index("=")]))      #como aqui sei que a esquerda da eq estao apenas varaiveis conhecidas e seus operadores, ja dou eval pra resolver tudo ate aqui
+
+            break
+
+    print(a)
+
+    for k in range(len(a[:a.index("=")])):
+
+        if a[k].isnumeric():
+
+            a = a[:k-1] + a[k-1:a.index("=")].replace(a[k-1:k+1], "") + a[a.index("="):] + inverter(a[k-1]) + a[k] #to remoldando "a", jogando as variaveis conhecidas(e seus operadores invertidos) para o lado direito da equacao
+
+    print(f"A = {eval(a[a.rindex(let)+2:])}")
+
+    print(a)
